@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import {
@@ -10,7 +10,7 @@ import {
 } from "react-query";
 import axios from "axios";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import StateProvider, { StateContext } from "./StateContext";
 
 const queryClient = new QueryClient();
@@ -19,51 +19,72 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <StateProvider>
-        <Global />
-        <Switch>
-          <Route path="/car">
-            <Car></Car>
-          </Route>
-          <Route path="/">
-            <Main />
-          </Route>
-        </Switch>
+        {/* <Global /> */}
+        <Routes />
       </StateProvider>
       <ReactQueryDevtools initialIsOpen={true} />
     </QueryClientProvider>
   );
 }
-
-function Global() {
-  const { state } = useContext(StateContext);
-  const { getUser } = useGetUser();
+const Routes: React.FC = () => {
   return (
     <>
-      {JSON.stringify(getUser.data?.data)} {getUser.status}
+      <Switch>
+        <Route path="/car">
+          {/* <UserGuard> */}
+          <Car />
+          {/* </UserGuard> */}
+        </Route>
+        <Route path="/">
+          <Main />
+        </Route>
+      </Switch>
     </>
   );
-}
+};
+
+// const UserGuard: React.FC = ({ children }) => {
+//   const { getUser } = useGetUser();
+//   if (getUser.isLoading) return <>Loading</>;
+//   if (getUser.data?.data.user.id) return <>{children}</>;
+//   return <Redirect to="/" />;
+// };
+
+// function Global() {
+//   const { getUser } = useGetUser();
+//   const data = getUser.data?.data;
+//   const { status } = getUser;
+//   return (
+//     <div>
+//       <h3>User:</h3>
+//       {status === "success" && objToList(data.user)}
+//     </div>
+//   );
+
+//   function objToList(obj: {}) {
+//     return Object.entries(obj).map((key) => {
+//       return (
+//         <ul key={key[0]}>
+//           {key[0]}: {key[1]}
+//         </ul>
+//       );
+//     });
+//   }
+// }
 
 function Car() {
-  const { getUser } = useGetUser();
-  const history = useHistory();
-  if (!getUser.data?.data.id) {
-    history.push("/");
-  }
-  return <></>;
+  const { state, updateState, setState } = useContext(StateContext);
+  const { getUser } = useGetUser(state.applicationId);
+  if (!getUser) return <Redirect to="/" />;
+  if (getUser.isLoading || getUser.isFetching) return <>Loading</>;
+  return <>{JSON.stringify(getUser.data?.data)}</>;
 }
 
-const useGetUser = () => {
-  const {
-    state: { applicationId },
-  } = useContext(StateContext);
-
+const useGetUser = (id: string | undefined) => {
   const getUser = useQuery(
-    ["currentUser", applicationId],
-    () => axios.get(`/api/user/${applicationId}`),
-    {
-      enabled: !!applicationId,
-    }
+    ["currentUser", id],
+    () => axios.get(`/api/user/${id}`),
+    { enabled: !!id }
   );
   return { getUser };
 };
@@ -78,6 +99,7 @@ function Main() {
   const { createUser } = useCreateUser();
   const history = useHistory();
   const { state, updateState, setState } = useContext(StateContext);
+  const queryClient = useQueryClient();
   return (
     <div className="App">
       <button

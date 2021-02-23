@@ -20,7 +20,7 @@ export function makeServer({ environment = "test" } = {}) {
     factories: {
       user: Factory.extend({ name: "" }),
       hobby: Factory.extend({ name: "" }),
-      // car: Factory.extend({ name: "", year: "" }),
+      car: Factory.extend({ name: "", year: "" }),
     },
 
     routes() {
