@@ -6,6 +6,7 @@ import {
   hasMany,
   Model,
   Response,
+  RestSerializer,
 } from "miragejs";
 
 export function makeServer({ environment = "test" } = {}) {
@@ -22,14 +23,26 @@ export function makeServer({ environment = "test" } = {}) {
       hobby: Factory.extend({ name: "" }),
       car: Factory.extend({ name: "", year: "" }),
     },
+    serializers: {
+      user: RestSerializer.extend({
+        include: ["car"],
+        embed: true,
+      }),
+    },
 
     routes() {
       this.namespace = "api";
+
+      this.post("/car/:id", (schema, request) => {
+        const { id } = request.params;
+        let attrs = JSON.parse(request.requestBody);
+        const user = schema.find("user", id);
+        const car = schema.create("car", { user, ...attrs });
+        return { id: car.id };
+      });
       this.post("/user", (schema, request) => {
         let attrs = JSON.parse(request.requestBody);
         const newUser = schema.create("user", {
-          hobbies: [],
-          cars: [],
           ...attrs,
         });
         return { id: newUser.id };
@@ -39,6 +52,8 @@ export function makeServer({ environment = "test" } = {}) {
       });
       this.get("/user/:id", (schema, request) => {
         const { id } = request.params;
+        let attrs = JSON.parse(request.requestBody);
+        const user = schema.find("user", id);
         return schema.find("user", id) || new Response(404);
       });
     },
