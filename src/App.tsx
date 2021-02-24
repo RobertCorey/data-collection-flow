@@ -9,7 +9,13 @@ import {
 } from "react-query";
 import axios from "axios";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { Redirect, Route, Switch, useHistory } from "react-router-dom";
+import {
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+  useParams,
+} from "react-router-dom";
 import StateProvider, { StateContext } from "./StateContext";
 
 const queryClient = new QueryClient();
@@ -30,8 +36,11 @@ const Routes: React.FC = () => {
     <>
       <Switch>
         <Route path="/car/:id">
-          <h1>Car</h1>
           <Car />
+        </Route>
+        <Route path="/Complete">
+          <h1>Complete</h1>
+          <Complete />
         </Route>
         <Route path="/">
           <h1>Home</h1>
@@ -80,6 +89,8 @@ function Car() {
   const { getUser } = useGetUser();
   const { createCar } = useCreateCar();
   const queryClient = useQueryClient();
+  const history = useHistory();
+  const { id } = useParams<{ id: string }>();
   /**
    * Route Guard
    * applicationId is required to render route
@@ -91,21 +102,34 @@ function Car() {
   if (getUser.isLoading || getUser.isFetching) return <>Loading</>;
   return (
     <div style={{}}>
+      <h1>Car {id}</h1>
       <button
-        onClick={() => {
-          if (typeof state.applicationId !== "string") return;
-          createCar
-            .mutateAsync({ name: "Prius", userId: state.applicationId })
-            .then(() => {
-              queryClient.invalidateQueries("currentUser");
-            });
+        onClick={async () => {
+          history.push("/complete");
+        }}
+      >
+        Finish
+      </button>
+      <br />
+      <button
+        onClick={async () => {
+          await addPrius();
+          history.push(`/car/${+id + 1}`);
         }}
       >
         Add Car
       </button>
-      <button>Add Additional Car</button>
     </div>
   );
+
+  function addPrius() {
+    if (typeof state.applicationId !== "string") return;
+    return createCar
+      .mutateAsync({ name: "Prius", userId: state.applicationId })
+      .then(() => {
+        queryClient.invalidateQueries("currentUser");
+      });
+  }
 }
 
 function Main() {
@@ -129,6 +153,10 @@ function Main() {
       </button>
     </div>
   );
+}
+
+function Complete() {
+  return <></>;
 }
 
 function Global() {
