@@ -13,7 +13,7 @@ export function Main() {
         onClick={async () => {
           try {
             const resp = await createUser.mutateAsync("Rob");
-            setState({ applicationId: resp.data.id });
+            setState({ userId: resp.data.id });
             history.push("/car/1");
           } catch (error) {
             console.log(error);
