@@ -33,6 +33,13 @@ Global State is implemented by [StateContext](https://github.com/RobertCorey/dat
 Car displays loading and error states to the user depending on the state of the data cache. When all data is not stale it shows a form that allows user to add cars or go to the next step.
 
 ## Testing
+[Car Test](https://github.com/RobertCorey/data-collection-flow/blob/main/src/Car.test.tsx) Attempts to follow the React Testing library philosohpy of asserting only on things visible to the user. The exception is [making assertions on the mock database](https://github.com/RobertCorey/data-collection-flow/blob/main/src/Car.test.tsx#L40). The rationale for this exception is that in a data collection app data provided by the user may not have any meaningful effect on the UI, but we still want to assert we are the ui is "outputting" the correct data.
+
+In addition to using RTL for tests scoped to a page Cypress is used to do an [E2E happy path test of the flow](https://github.com/RobertCorey/data-collection-flow/blob/main/cypress/integration/main.spec.js)
+
+Both of these types of test rely on miragejs and it's ORM. Using an ORM to mock a backend takes more time then using static mocks of backend data but scales better as your test suite grows. 
+
+The idea being the combination of these two strategies accounts for the page to page interactions as well as a detailed testing of the logic of a specific page. 
 
 
 
