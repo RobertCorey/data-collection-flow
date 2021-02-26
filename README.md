@@ -9,6 +9,10 @@ Testing: Miragejs, Jest, React Testing Library, Cypress
 
 Data Fetching/Caching: React-Query
 
+## Diagram of a Data Collection/ Workflow App
+![Types of Apps - Page 1](https://user-images.githubusercontent.com/5519930/109348639-cf897980-7842-11eb-8a43-8c321d5368fe.png)
+
+
 ## Demo Backend
 The data model of the mock back end is 1 User object that has many Car objects. This is expressed in the App as a page for creating Car objects that routes to itself, allowing N car objects to be created for a given User object. 
 
