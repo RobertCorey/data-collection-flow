@@ -6,8 +6,8 @@ interface State {
 
 export const StateContext = React.createContext<{
   state: State;
-  setState: React.Dispatch<React.SetStateAction<{}>>;
-  updateState: () => void;
+  setState: React.Dispatch<React.SetStateAction<State>>;
+  updateState: (state: State) => void;
 }>({
   state: {},
   setState: () => {},
