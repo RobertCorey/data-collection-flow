@@ -8,4 +8,5 @@ Data Fetching/Caching: React-Query
 
 
 [] make mutation requests invalidate queries in after effect
+
 [] type query keys
