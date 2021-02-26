@@ -18,6 +18,7 @@ export function Car() {
    * Prevent user from interacting with form while performing mutation
    */
   if (createCar.isLoading) return <>Adding Car</>;
+  if (getUser.error) return <>Error!</>;
   /**
    * Guarantee we always have the freshest user
    */
