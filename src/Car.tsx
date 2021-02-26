@@ -19,9 +19,11 @@ export function Car() {
   /**
    * Guarantee we always have the freshest user
    */
+  if (createCar.isLoading) return <>Adding Car</>;
   if (getUser.isLoading || getUser.isFetching) return <>Loading</>;
   return (
     <div style={{}}>
+      <h2>Would you like to add: </h2>
       <h1>Car {id}</h1>
       <button
         onClick={async () => {
