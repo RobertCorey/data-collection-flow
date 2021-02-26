@@ -9,12 +9,30 @@ Testing: Miragejs, Jest, React Testing Library, Cypress
 
 Data Fetching/Caching: React-Query
 
+## Demo Backend
+The data model of the mock back end is 1 User object that has many Car objects. This is expressed in the App as a page for creating Car objects that routes to itself, allowing N car objects to be created for a given User object. 
+
 ## Router Guards
 Example: https://github.com/RobertCorey/data-collection-flow/blob/main/src/Car.tsx#L13
 
 React Components that represent pages can implement router guards by asserting against the application state and returning a React Router `<Redirect>` component when the user is not in the correct state to access a page.
 
 ## Data Fetching/Caching
-Example: https://github.com/RobertCorey/data-collection-flow/blob/main/src/Hooks.tsx
+A request to GET a user object returns a User and all the cars associated with that User. This means that any mutation to the User Object or to any of it's child Cars will mutate the GET User response.
 
-Custom Hooks are used on top of react-query to expose objects representing cached data resources
+By using react-query and custom hooks we can ensure that the application always has the most recent User object. This is done by modeling the mutation dependecy in the custom hooks. For example the [createUser function](https://github.com/RobertCorey/data-collection-flow/blob/64efdc87680464316058b4b27d52b428de0e2b5f/src/Hooks.tsx#L23) will mark the GET User cached data as stale, resulting in the application fetching the most recent changes.
+
+By modeling the dependencies in the hooks, consuming components can use the cached data resources without having to concern themselves with manually updating them.
+
+## Global State
+Global State is implemented by [StateContext](https://github.com/RobertCorey/data-collection-flow/blob/main/src/StateContext.tsx) a wrapper around `useState`. It's used to store the id of the current user, which is then used by the data queries and mutatators
+
+## Page Component
+[Car](https://github.com/RobertCorey/data-collection-flow/blob/main/src/Car.tsx) is an example page component, corresponding the the Car data resource. In an actual app there would be many of these pages each corresponding to a different data resource.
+
+Car displays loading and error states to the user depending on the state of the data cache. When all data is not stale it shows a form that allows user to add cars or go to the next step.
+
+## Testing
+
+
+
