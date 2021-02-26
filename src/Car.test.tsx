@@ -16,7 +16,7 @@ test("renders learn react link", async () => {
     <QueryClientProvider client={queryClient}>
       <StateContext.Provider
         value={{
-          state: { applicationId: user.id },
+          state: { userId: user.id },
           setState: () => {},
           updateState: () => {},
         }}

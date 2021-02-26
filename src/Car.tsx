@@ -15,11 +15,14 @@ export function Car() {
    * Route Guard
    * applicationId is required to render route
    */
-  if (!state.applicationId) return <Redirect to="/" />;
+  if (!state.userId) return <Redirect to="/" />;
+  /**
+   * Prevent user from interacting with form while performing mutation
+   */
+  if (createCar.isLoading) return <>Adding Car</>;
   /**
    * Guarantee we always have the freshest user
    */
-  if (createCar.isLoading) return <>Adding Car</>;
   if (getUser.isLoading || getUser.isFetching) return <>Loading</>;
   return (
     <div style={{}}>
@@ -45,11 +48,10 @@ export function Car() {
   );
 
   function addPrius() {
-    if (typeof state.applicationId !== "string") return;
-    return createCar
-      .mutateAsync({ name: "Prius", userId: state.applicationId })
-      .then(() => {
-        queryClient.invalidateQueries("currentUser");
-      });
+    if (typeof state.userId !== "string") return;
+    return createCar.mutateAsync({
+      name: "Prius",
+      userId: state.userId,
+    });
   }
 }

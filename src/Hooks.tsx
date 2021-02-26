@@ -1,25 +1,38 @@
 import { useContext } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import { StateContext } from "./StateContext";
 
+export enum QueryKey {
+  CurrentUser = "CurrentUser",
+}
+
 export const useGetUser = () => {
   const { state } = useContext(StateContext);
-  const id = state.applicationId;
+  const id = state.userId;
   const getUser = useQuery(
-    ["currentUser", id],
+    [QueryKey.CurrentUser, id],
     () => axios.get(`/api/user/${id}`),
-    { enabled: !!id }
+    {
+      enabled: !!id,
+    }
   );
   return { getUser };
 };
-export const useCreateUser = () => {
-  const createUserService = (name: string) => axios.post("/api/user", { name });
-  const createUser = useMutation(createUserService);
 
+export const useCreateUser = () => {
+  const queryClient = useQueryClient();
+  const createUserService = (name: string) => axios.post("/api/user", { name });
+  const createUser = useMutation(createUserService, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(QueryKey.CurrentUser);
+    },
+  });
   return { createUser };
 };
+
 export const useCreateCar = () => {
+  const queryClient = useQueryClient();
   const createCarService = ({
     name,
     userId,
@@ -27,7 +40,10 @@ export const useCreateCar = () => {
     name: string;
     userId: string;
   }) => axios.post(`/api/car/${userId}`, { name });
-  const createCar = useMutation(createCarService);
-
+  const createCar = useMutation(createCarService, {
+    onSuccess: (_, { userId }) => {
+      queryClient.invalidateQueries([QueryKey.CurrentUser, userId]);
+    },
+  });
   return { createCar };
 };

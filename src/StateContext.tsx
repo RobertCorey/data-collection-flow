@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 
 interface State {
-  applicationId?: string;
+  userId?: string;
 }
 
 export const StateContext = React.createContext<{
