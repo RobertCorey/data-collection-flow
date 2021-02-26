@@ -7,5 +7,5 @@ Testing: Miragejs, Jest, React Testing Library, Cypress
 Data Fetching/Caching: React-Query
 
 
-[] make mutation requests invalidate queries in after effect
-[] type query keys
+- [ ] make mutation requests invalidate queries in after effect
+- [ ] type query keys
