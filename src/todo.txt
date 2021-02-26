@@ -1,2 +1,7 @@
-Create new application on submit then route to the next page
-allow editing on the next page
+x Create new application on submit then route to the next page
+x allow editing on the next page
+
+Extract Car component
+extract hooks
+
+file structure
