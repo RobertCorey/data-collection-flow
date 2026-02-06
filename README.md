@@ -1,3 +1,5 @@
+**Live:** https://robertcorey.github.io/data-collection-flow/
+
 # Data Collection/ Workflow App
 
 An example implementation of a data collection/ workflow type app. The purpose of a data collection application is to get large amounts of data from a user. This is accomplished by guiding the user through a series of screens with forms. The application determines what data it needs to collect from the user based on the data that has been previously provided by the user. The ultimate goal of this type of application is to reach a state where there is no additional information to collect from the user.
@@ -44,6 +46,3 @@ In addition to using RTL for tests scoped to a page Cypress is used to do an [E2
 Both of these types of test rely on miragejs and it's ORM. Using an ORM to mock a backend takes more time then using static mocks of backend data but scales better as your test suite grows. 
 
 The idea being the combination of these two strategies accounts for the page to page interactions as well as a detailed testing of the logic of a specific page. 
-
-
-
